@@ -41,3 +41,65 @@ func mergeSort(nums []int) {
 	mergeSort(nums[mid:])
 	merge(nums, mid)
 }
+
+
+func mergeSortCurCore(nums []int, ch chan int) {
+	length := len(nums)
+	if length < 3 {
+		if length == 2 && nums[0] > nums[1] {
+			nums[0], nums[1] = nums[1], nums[0]
+		}
+		for _, c := range nums {
+			ch <- c
+		}
+		close(ch)
+		return
+	}
+	mid := length/2
+	leftCh := make(chan int, mid - 0)
+	rightCh := make(chan int, len(nums) - mid)
+	go mergeSortCurCore(nums[:mid], leftCh)
+	go mergeSortCurCore(nums[mid:], rightCh)
+	//for i := range leftCh {
+	//	ch <- i
+	//}
+	//for i := range rightCh {
+	//	ch <- i
+	//}
+
+
+	i, okI := <- leftCh
+	j, okJ := <- rightCh
+	for okI && okJ {
+		if i > j {
+			ch <- j
+			j, okJ = <- rightCh
+		} else {
+			ch <- i
+			i, okI = <- leftCh
+		}
+	}
+	for okI {
+		ch <- i
+		i, okI = <- leftCh
+	}
+	for okJ {
+		ch <- j
+		j, okJ = <- rightCh
+	}
+	close(ch)
+
+}
+
+
+func mergeSortCur(nums []int) {
+	cpy := make([]int, len(nums))
+	copy(cpy, nums)
+	ch := make(chan int, len(nums))
+	go mergeSortCurCore(nums, ch)
+	i := 0
+	for num := range ch {
+		nums[i] = num
+		i++
+	}
+}

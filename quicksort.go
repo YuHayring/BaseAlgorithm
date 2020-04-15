@@ -9,43 +9,56 @@ func quickSort(nums []int) {
 		return
 	}
 
-	left, right := 1, len(nums) - 1
-	var target int
-	for left <= right {
-		for left < right && nums[left] < nums[0] {
-			left++
-		}
-		if left == right {
-			if nums[right] < nums[0] {
-				nums[0], nums[left] = nums[left], nums[0]
-				target = left
-			} else {
-				nums[0], nums[left-1] = nums[left-1], nums[0]
-				target = left - 1
-			}
-			break
-		}
-		for left < right && nums[right] >= nums[0] {
+	left, right := 0, len(nums) - 1
+	//var target int
+	//for left <= right {
+	//	for left < right && nums[left] < nums[0] {
+	//		left++
+	//	}
+	//	if left == right {
+	//		if nums[right] < nums[0] {
+	//			nums[0], nums[left] = nums[left], nums[0]
+	//			target = left
+	//		} else {
+	//			nums[0], nums[left-1] = nums[left-1], nums[0]
+	//			target = left - 1
+	//		}
+	//		break
+	//	}
+	//	for left < right && nums[right] >= nums[0] {
+	//		right--
+	//	}
+	//	if left == right {
+	//		nums[0], nums[left-1] = nums[left-1], nums[0]
+	//		target = left - 1
+	//		break
+	//	}
+	//	if left + 1 == right {
+	//		nums[0], nums[left], nums[right] = nums[right], nums[0], nums[left]
+	//		target = left
+	//		break
+	//	}
+	//	nums[left], nums[right] = nums[right], nums[left]
+	//	left, right = left + 1, right -1
+	//}
+
+	targetNum := nums[left]
+	for left < right{
+		for nums[right] >= targetNum && right > left {
 			right--
 		}
-		if left == right {
-			nums[0], nums[left-1] = nums[left-1], nums[0]
-			target = left - 1
-			break
+		nums[left] = nums[right]
+		for nums[left] <= targetNum && right > left {
+			left++
 		}
-		if left + 1 == right {
-			nums[0], nums[left], nums[right] = nums[right], nums[0], nums[left]
-			target = left
-			break
-		}
-		nums[left], nums[right] = nums[right], nums[left]
-		left, right = left + 1, right -1
+		nums[right] = nums[left]
 	}
-	if target - 1 > - 1 {
-		quickSort(nums[:target])
+	nums[right] = targetNum
+	if right - 1 > - 1 {
+		quickSort(nums[:right])
 	}
-	if target + 1 < len(nums) {
-		quickSort(nums[target+1:])
+	if right + 1 < len(nums) {
+		quickSort(nums[right+1:])
 	}
 
 

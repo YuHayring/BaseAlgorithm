@@ -12,14 +12,14 @@ func main() {
 	error := false
 
 
-	for times := 0; times < 100; times++ {
+	for times := 0; times < 1000 ; times++ {
 		for i,_ := range nums {
 			nums[i] = rand.Intn(10)
 			correct[i] = nums[i]
 		}
 		//fmt.Print("src     :")
 		//fmt.Println(nums)
-		quickSort(nums)
+		mergeSortCur(nums)
 		mergeSort(correct)
 		error = false
 		for i,v := range nums {
@@ -42,8 +42,8 @@ func main() {
 	}
 
 
-	//nums := []int{3,6,2,8,7,4,7,3,6,0}
-	//quickSort(nums)
+	//nums := []int{5,4,3,2,1}
+	//mergeSortCur(nums)
 	//fmt.Println(nums)
 
 }
