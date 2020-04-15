@@ -1,2 +1,2 @@
-# BaseAlgorithm
-BaseAlgorithm
+# BaseAlgorithm of Golang
+BaseAlgorithm of Golang
