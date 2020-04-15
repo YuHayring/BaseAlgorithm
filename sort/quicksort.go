@@ -1,7 +1,7 @@
-package main
+package sort
 
 
-func quickSort(nums []int) {
+func QuickSort(nums []int) {
 	if len(nums) < 3 {
 		if len(nums) == 2 && nums[0] > nums[1] {
 			nums[0], nums[1] = nums[1], nums[0]
@@ -55,10 +55,10 @@ func quickSort(nums []int) {
 	}
 	nums[right] = targetNum
 	if right - 1 > - 1 {
-		quickSort(nums[:right])
+		QuickSort(nums[:right])
 	}
 	if right + 1 < len(nums) {
-		quickSort(nums[right+1:])
+		QuickSort(nums[right+1:])
 	}
 
 

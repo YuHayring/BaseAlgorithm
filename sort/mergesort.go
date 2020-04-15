@@ -1,4 +1,4 @@
-package main
+package sort
 
 //归并排序O(nlog2n)
 func merge(nums []int, mid int) {
@@ -25,7 +25,7 @@ func merge(nums []int, mid int) {
 	//left已在原数组中，不需要归并
 }
 
-func mergeSort(nums []int) {
+func MergeSort(nums []int) {
 	length := len(nums)
 	if length < 2 {
 		return
@@ -37,8 +37,8 @@ func mergeSort(nums []int) {
 		return
 	}
 	mid := length/2
-	mergeSort(nums[:mid])
-	mergeSort(nums[mid:])
+	MergeSort(nums[:mid])
+	MergeSort(nums[mid:])
 	merge(nums, mid)
 }
 
@@ -92,7 +92,7 @@ func mergeSortCurCore(nums []int, ch chan int) {
 }
 
 
-func mergeSortCur(nums []int) {
+func MergeSortCur(nums []int) {
 	cpy := make([]int, len(nums))
 	copy(cpy, nums)
 	ch := make(chan int, len(nums))

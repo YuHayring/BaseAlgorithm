@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 )
+import "./sort"
 
 func main() {
 
@@ -19,8 +20,8 @@ func main() {
 		}
 		//fmt.Print("src     :")
 		//fmt.Println(nums)
-		mergeSortCur(nums)
-		mergeSort(correct)
+		sort.MergeSortCur(nums)
+		sort.MergeSort(correct)
 		error = false
 		for i,v := range nums {
 			if v != correct[i] {
@@ -43,7 +44,7 @@ func main() {
 
 
 	//nums := []int{5,4,3,2,1}
-	//mergeSortCur(nums)
+	//sort.MergeSortCur(nums)
 	//fmt.Println(nums)
 
 }

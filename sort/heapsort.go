@@ -1,7 +1,7 @@
-package main
+package sort
 
 //堆排序
-func heapSort(nums []int, comparator func(a int, b int) bool ) {
+func HeapSort(nums []int, comparator func(a int, b int) bool ) {
 	end := len(nums)
 	for index := (end/2) - 1; index > -1; index-- {
 		adjust(nums, index, comparator, end)
@@ -35,10 +35,10 @@ func adjust(nums []int, index int, comparator func(a int, b int) bool, end int) 
 	}
 }
 
-func bigger(a int, b int) bool {
+func Bigger(a int, b int) bool {
 	return a > b
 }
 
-func smaller(a int, b int) bool {
+func Smaller(a int, b int) bool {
 	return a < b
 }
