@@ -1,5 +1,6 @@
 package main
 
+//O(log2n)
 func BinarySearch(sortedNums []int, target int) int {
 	length := len(sortedNums)
 	if length == 0 {
