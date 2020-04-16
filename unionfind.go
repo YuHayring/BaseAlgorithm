@@ -19,15 +19,15 @@ func ConstructorOfUnionFind(cap int) *UnionFind {
 }
 
 //待优化
-func (this *UnionFind) union(a int, b int) {
-	if this.find(a) == this.find(b) {
+func (this *UnionFind) Union(a int, b int) {
+	if this.Find(a) == this.Find(b) {
 		return
 	}
 	this.pre[a] = b
 	this.size--
 }
 
-func (this *UnionFind) find(me int) int {
+func (this *UnionFind) Find(me int) int {
 	for me != this.pre[me] {
 		me, this.pre[me] = this.pre[me], this.pre[this.pre[me]]
 	}

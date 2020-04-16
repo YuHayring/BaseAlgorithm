@@ -1,4 +1,4 @@
-package main
+package search
 
 //O(log2n)
 func BinarySearch(sortedNums []int, target int) int {
