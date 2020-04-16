@@ -1,11 +1,9 @@
 package main
 
 import (
-	obj "./basestruct"
+	pg "./permutationgenerate"
 	"fmt"
 )
-import s "./search"
-
 func main() {
 
 	//nums := make([]int, 10)
@@ -50,18 +48,11 @@ func main() {
 	//fmt.Println(BinarySearch([]int{0,1,2,3,4,5,6,7,8,9},6))
 
 
-	root := &obj.TreeNode{Val:1}
-	root.Left = &obj.TreeNode{Val:2}
-	root.Right = &obj.TreeNode{Val:3}
-	root.Left.Left = &obj.TreeNode{Val:4}
 
-	s.DFS(root, func(node *obj.TreeNode) {
-		fmt.Println(node.Val)
-	})
-	s.BFS(root, func(node *obj.TreeNode) {
-		fmt.Println(node.Val)
-	})
-
-
+	src := []int{1,2,3,4,5}
+	result := pg.BackTracking(src)
+	for _,arr := range result {
+		fmt.Println(arr)
+	}
 
 }
