@@ -2,12 +2,6 @@ package sort
 
 
 func QuickSort(nums []int) {
-	if len(nums) < 3 {
-		if len(nums) == 2 && nums[0] > nums[1] {
-			nums[0], nums[1] = nums[1], nums[0]
-		}
-		return
-	}
 
 	left, right := 0, len(nums) - 1
 	//var target int
