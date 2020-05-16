@@ -17,9 +17,8 @@ func  (this *TrieTree) Insert(word string) {
 	for _,char := range str {
 		if p.next[char - BASE] == nil {
 			p.next[char - BASE] = BuildTrieTree()
-		} else {
-			p = p.next[char - BASE]
 		}
+		p = p.next[char - BASE]
 	}
 	p.end = true
 }
