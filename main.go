@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./search"
+	"./permutationgenerate"
 	"fmt"
 )
 func main() {
@@ -49,7 +49,7 @@ func main() {
 
 
 
-	src := []int{3,2,4,6,43,5,654,2}
-	fmt.Println(search.KthMaxInArray(src, 1))
+	src := []int{1,2,3,4,5}
+	fmt.Println(permutationgenerate.BackTracking(src))
 
 }
