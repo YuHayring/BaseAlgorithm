@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./permutationgenerate"
+	"./basestruct"
 	"fmt"
 )
 func main() {
@@ -49,7 +49,36 @@ func main() {
 
 
 
-	src := []int{1,2,3,4,5}
-	fmt.Println(permutationgenerate.BackTracking(src))
+
+	RBTreeTest()
 
 }
+
+
+func RBTreeTest() {
+	a := []basestruct.Integer{10, 40, 30, 60, 90, 70, 20, 50, 80}
+	ilen := len(a)
+
+	rootPointer := new(basestruct.RedBlackTree)
+	fmt.Printf("== 原始数据: ")
+
+	for i := 0; i < ilen; i++ {
+		fmt.Printf("%d ", a[i])
+	}
+
+	fmt.Printf("\n")
+
+	for i := 0; i < ilen; i++ {
+		var num basestruct.Comparable = a[i]
+		rootPointer.Insert(&num)
+	}
+	root,_ := rootPointer.GetRoot()
+	basestruct.RBTreePrint(root,-1)
+	fmt.Print("\n")
+	basestruct.RBTreePrint(root,0)
+	fmt.Print("\n")
+	basestruct.RBTreePrint(root,1)
+	fmt.Print("\n")
+
+}
+
