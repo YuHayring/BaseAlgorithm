@@ -79,6 +79,15 @@ func RBTreeTest() {
 	fmt.Print("\n")
 	basestruct.RBTreePrint(root,1)
 	fmt.Print("\n")
+	fmt.Print("\n")
+	fmt.Print("\n")
+	for i := 0; i < ilen; i++ {
+		var num basestruct.Comparable = a[i]
+		rootPointer.DeleteVal(&num)
+		basestruct.RBTreePrint(root,0)
+		fmt.Print("\n")
+
+	}
 
 }
 

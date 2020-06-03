@@ -17,6 +17,10 @@ type Color bool
 3.如果节点为红，其子节点必须为黑
 4.任一节点至nil的任何路径，所包含的黑节点数必须相同。
 5.叶子节点nil为黑色
+
+
+注：这款实现代码在root上使用了一个Node作为指针指向root，即root的parent为pointer节点，pointer节点的左孩子为root
+化简了对root的操作。
  */
 
 type RedBlackTree struct {
@@ -27,13 +31,13 @@ type RedBlackTree struct {
 	color Color
 }
 
-func (this *RedBlackTree) root() bool {
-	return this.parent.parent == nil
+func (this *RedBlackTree) isRoot() bool {
+	return this.parent != nil && this.parent.parent == nil
 }
 
 func leftRotate(node *RedBlackTree) {
 	if node.parent == nil {
-		panic("This is the pointer of root!")
+		panic("This is the pointer of isRoot!")
 	}
 	//新指针存储当前节点的右孩子
 	newRoot := node.right
@@ -67,7 +71,7 @@ func leftRotate(node *RedBlackTree) {
 func rightRotate(node *RedBlackTree) {
 
 	if node.parent == nil {
-		panic("This is the pointer of root!")
+		panic("This is the pointer of isRoot!")
 	}
 
 	//新指针存储当前节点的左孩子
@@ -136,64 +140,64 @@ func (this *RedBlackTree) Insert(val *Comparable) error {
 
 		return nil
 	} else {
-		return errors.New("this is not the pointer of root")
+		return errors.New("this is not the pointer of isRoot")
 	}
 }
 
 func (this *RedBlackTree) insertFixUp(cur *RedBlackTree) {
 	var parent, grandpa *RedBlackTree
-	//当前节点非根，并且非红
-	for !cur.root() && cur.parent.color == RED {
-		parent = cur.parent
-		grandpa = parent.parent
+	//当前节点非根，并且父亲非红
+	for cur != nil && !cur.isRoot() && cur.parent.Color() == RED {
+		parent = cur.Parent()
+		grandpa = parent.Parent()
 
 		//若 父节点 是 祖父节点 的左孩子
-		if parent == grandpa.left {
+		if parent == grandpa.Left() {
 			//Case1 叔叔是红色，交换父辈和祖辈颜色
-			if grandpa.right != nil && grandpa.right.color == RED {
-				grandpa.right.color = BLACK
-				       parent.color = BLACK
-				grandpa.color = RED
+			if grandpa.Right() != nil && grandpa.Right().Color() == RED {
+				grandpa.Right().setColor(BLACK)
+				parent.setColor(BLACK)
+				grandpa.setColor(RED)
 				cur = grandpa
 				continue
 			}
 
 			//Case2 叔叔是黑色，当前节点是右孩子，左旋，重新处理父亲
-			if parent.right == cur {
+			if parent.Right() == cur {
 				leftRotate(parent)
 				parent, cur = cur, parent
 			}
 
 			//Case3 叔叔是黑色，当前节点是左孩子,交换父辈祖辈颜色，右旋
-			parent.color = BLACK
-			grandpa.color = RED
+			parent.setColor(BLACK)
+			grandpa.setColor(RED)
 			rightRotate(grandpa)
 
 		} else {
 			//父节点是祖父节点的右孩子，与上述操作对称
 			//Case1 叔叔是红色，交换父辈和祖辈颜色
-			if grandpa.left != nil && grandpa.left.color == RED {
-				grandpa.left.color = BLACK
-				parent.color = BLACK
-				grandpa.color = RED
+			if grandpa.Left() != nil && grandpa.Left().Color() == RED {
+				grandpa.Left().setColor(BLACK)
+				parent.setColor(BLACK)
+				grandpa.setColor(RED)
 				cur = grandpa
 				continue
 			}
 
 			//Case2 叔叔是黑色，当前节点是左孩子，右旋，重新处理父亲
-			if parent.left == cur {
+			if parent.Left() == cur {
 				rightRotate(parent)
 				parent, cur = cur, parent
 			}
 
 			//Case3 叔叔是黑色，当前节点是右孩子,交换父辈祖辈颜色，右旋
-			parent.color = BLACK
-			grandpa.color = RED
+			parent.setColor(BLACK)
+			grandpa.setColor(RED)
 			leftRotate(grandpa)
 		}
 
 		//根节点设为黑色
-		this.left.color = BLACK
+		this.Left().setColor(BLACK)
 	}
 }
 
@@ -204,10 +208,11 @@ func (this *RedBlackTree) DeleteVal(val *Comparable) error {
 		comparing := (*target.Val).CompareTo(val)
 		for comparing != 0 && target != nil {
 			if comparing < 0 {
-				target = target.left
-			} else {
 				target = target.right
+			} else {
+				target = target.left
 			}
+			comparing = (*target.Val).CompareTo(val)
 		}
 		if target == nil {
 			return nil
@@ -216,15 +221,11 @@ func (this *RedBlackTree) DeleteVal(val *Comparable) error {
 		this.DeleteNode(target)
 		return nil
 	} else {
-		return errors.New("this is not the pointer of root")
+		return errors.New("this is not the pointer of isRoot")
 	}
 }
 
 func (this *RedBlackTree) DeleteNode(target *RedBlackTree) {
-
-	var replacesChild *RedBlackTree
-	var replacesParent *RedBlackTree
-	var replacesColor Color
 
 	//被删除节点有两个孩子
 	if target.left != nil && target.right != nil {
@@ -234,98 +235,51 @@ func (this *RedBlackTree) DeleteNode(target *RedBlackTree) {
 			replace = replace.left
 		}
 
-		//节点替换
-		if target.parent.left == target {
+		target.Val = replace.Val
+		target = replace
+	}
+
+	//被删除的只有一个孩子
+
+	var replace *RedBlackTree
+	if target.left != nil {
+		replace = target.left
+	} else {
+		replace = target.right
+	}
+
+	//如果只有一个孩子节点
+	if replace != nil {
+		//删除target
+		replace.parent = target.parent
+		if target == target.parent.left {
 			target.parent.left = replace
 		} else {
 			target.parent.right = replace
 		}
 
+		target.left, target.right, target.parent = nil, nil, nil
 
-		//需要调整的节点
-		replacesChild = replace.right
-		replacesParent = replace.parent
-
-		replacesColor = replace.color
-
-		//将替代节点删除后的缺口连接起来
-		if replacesParent == target {
-			//被删除节点是后续节点的父节点
-			replacesParent = replace
-		} else {
-			//连接右子与父亲
-			if replacesChild != nil {
-				replacesChild.parent = replacesParent
-			}
-			replacesParent.left = replacesChild;
-
-			replace.right = target.right
-			target.right.parent = replace
+		if target.color == BLACK {
+			this.deleteFixUp(replace)
 		}
-
-		//连接替代节点和其父亲
-		replace.parent = target.parent
-		replace.color = target.color
-		replace.left = target.left
-
-		target.left.parent = replace
-
-		if replacesColor == BLACK {
-			this.deleteFixUp(replacesChild)
-		}
-		return
-	}
-
-	//被删除的只有一个孩子
-
-	if !(target.left == nil && target.right == nil ) {
-		if target.left != nil {
-			replacesChild = target.left
-		} else {
-			replacesChild = target.right
-		}
-
-		replacesParent = target.parent
-		replacesColor = target.color
-
-		if replacesChild != nil {
-			replacesChild.parent = replacesParent
-		}
-
-		if replacesParent.left == target {
-			replacesParent.left = replacesChild
-		} else {
-			replacesParent.right = replacesChild
-		}
-
-		if replacesColor == BLACK {
-			this.deleteFixUp(replacesChild)
-		}
-
-		return
-	}
-
-	//被删除节点没有孩子
-	if target.root() {
+	} else if target.isRoot() {
+		//整棵树只有根节点
+		target.left, target.right, target.parent = nil, nil, nil
 		this.left = nil
-		target.parent = nil
 	} else {
-		//直接调整
 		if target.color == BLACK {
 			this.deleteFixUp(target)
 		}
-		//删除节点
 		if target.parent != nil {
 			if target == target.parent.left {
 				target.parent.left = nil
-			} else if target == target.parent.right {
+			} else if target == target.parent.right{
 				target.parent.right = nil
 			}
 			target.parent = nil
 		}
 	}
-
-
 
 }
 
@@ -333,121 +287,191 @@ func (this *RedBlackTree) DeleteNode(target *RedBlackTree) {
 
 
 func (this *RedBlackTree) deleteFixUp(target *RedBlackTree) {
-	
+
 	var brother,parent *RedBlackTree
 	// 循环处理，条件为x不是root节点且是黑色的（因为红色不会对红黑树的性质造成破坏，所以不需要调整
-	for !target.root() && ( target == nil || target.color == BLACK ) {
-		parent = target.parent
-		if parent.left == target {
+	for target == nil || !target.isRoot() && target.Color() == BLACK {
+		if target == nil {
+			parent = nil
+		} else {
+			parent = target.Parent()
+		}
+
+
+		if parent.Left() == target {
 			//目标是父亲的左孩子
-			brother = parent.right
-			if brother.color == RED {
+			brother = parent.Right()
+			if brother.Color() == RED {
 				// Case 1 兄弟是红色的
-				brother.color = BLACK
-				parent.color = RED
+				brother.setColor(BLACK)
+				parent.setColor(RED)
 				leftRotate(parent)
-				brother = parent.right
+				brother = parent.Right()
 			}
 
-			if (brother.left != nil || brother.left.color == BLACK) &&
-				(brother.right != nil || brother.right.color == BLACK) {
+			if (brother.Left().Color() == BLACK) &&
+				(brother.Right().Color() == BLACK) {
 				//Case 2: x的兄弟是黑色，且兄弟的俩个孩子也都是黑色的
-				brother.color = RED
+				brother.setColor(RED)
 				target = parent
-				parent = target.parent
+				parent = target.Parent()
 			} else {
-				if brother.right != nil || brother.right.color == BLACK {
+				if brother.Right().Color() == BLACK {
 					// Case 3: x的兄弟是黑色的，并且兄弟的左孩子是红色，右孩子为黑色。
-					brother.left.color = BLACK
-					brother.color = RED
+					brother.Left().setColor(BLACK)
+					brother.setColor(RED)
 					rightRotate(brother)
-					brother = parent.right
+					brother = parent.Right()
 				}
 				// Case 4: x的兄弟是黑色的；并且兄弟的右孩子是红色的，左孩子任意颜色。
-				brother.color = parent.color
-				parent.color = BLACK
-				brother.right.color = BLACK
+				brother.setColor(parent.Color())
+				parent.setColor(BLACK)
+				brother.Right().setColor(BLACK)
 				leftRotate(parent)
-				target = this.left
+				target = this.Left()
 				break
 			}
 
 		} else {
 			//目标是父亲的右孩子
-			brother = parent.left
-			if brother.color == RED {
+			brother = parent.Left()
+			if brother.Color() == RED {
 				// Case 1 兄弟是红色的
-				brother.color = BLACK
-				parent.color = RED
+				brother.setColor(BLACK)
+				parent.setColor(RED)
 				rightRotate(parent)
-				brother = parent.left
+				brother = parent.Left()
 			}
 
-			if (brother.left != nil || brother.left.color == BLACK) &&
-				(brother.right != nil || brother.right.color == BLACK) {
+			if (brother.Left() != nil || brother.Left().Color() == BLACK) &&
+				(brother.Right() != nil || brother.Right().Color() == BLACK) {
 				//Case 2: x的兄弟是黑色，且兄弟的俩个孩子也都是黑色的
-				brother.color = RED
+				brother.setColor(RED)
 				target = parent
-				parent = target.parent
+				parent = target.Parent()
 			} else {
-				if brother.left != nil || brother.left.color == BLACK {
+				if brother.Left() != nil || brother.Left().Color() == BLACK {
 					// Case 3: x的兄弟是黑色的，并且兄弟的左孩子是红色，右孩子为黑色。
-					brother.right.color = BLACK
-					brother.color = RED
+					brother.Right().setColor(BLACK)
+					brother.setColor(RED)
 					leftRotate(brother)
-					brother = parent.left
+					brother = parent.Left()
 				}
 				// Case 4: x的兄弟是黑色的；并且兄弟的右孩子是红色的，左孩子任意颜色。
-				brother.color = parent.color
-				parent.color = BLACK
-				brother.left.color = BLACK
+				brother.setColor(parent.Color())
+				parent.setColor(BLACK)
+				brother.Left().setColor(BLACK)
 				rightRotate(parent)
-				target = this.right
+				target = this.Right()
 				break
 			}
 		}
 	}
 	if target != nil {
-		target.color = BLACK
+		target.setColor(BLACK)
 	}
 }
 
 
 func RBTreePrint(root *RedBlackTree, way int) {
+	fmt.Print("{")
 	if way < 0 {
+		if root.color {
+			fmt.Print("R")
+		} else {
+			fmt.Print("B")
+		}
 		fmt.Print(*root.Val)
 		fmt.Print(" ")
 		if root.left != nil {
 			RBTreePrint(root.left, way)
+		} else {
+			fmt.Print("nil")
 		}
 		if root.right != nil {
 			RBTreePrint(root.right, way)
+		} else {
+			fmt.Print("nil")
 		}
 	} else if way > 0 {
 		if root.left != nil {
 			RBTreePrint(root.left, way)
+		} else {
+			fmt.Print("nil")
 		}
 		if root.right != nil {
 			RBTreePrint(root.right, way)
+		} else {
+			fmt.Print("nil")
+		}
+		if root.color {
+			fmt.Print("R")
+		} else {
+			fmt.Print("B")
 		}
 		fmt.Print(*root.Val)
 		fmt.Print(" ")
 	} else {
 		if root.left != nil {
 			RBTreePrint(root.left, way)
+		} else {
+			fmt.Print("nil")
+		}
+		if root.color {
+			fmt.Print("R")
+		} else {
+			fmt.Print("B")
 		}
 		fmt.Print(*root.Val)
 		fmt.Print(" ")
 		if root.right != nil {
 			RBTreePrint(root.right, way)
+		} else {
+			fmt.Print("nil")
 		}
 	}
+
+	fmt.Print("}")
 }
 
 
 func (this *RedBlackTree) GetRoot() (*RedBlackTree,error) {
 	if this.parent != nil {
-		return nil,errors.New("This is not the pointer of root")
+		return nil,errors.New("This is not the pointer of isRoot")
 	}
 	return this.left,nil
+}
+
+func (this *RedBlackTree) Left() *RedBlackTree {
+	if this == nil {
+		return nil
+	}
+	return this.left
+}
+
+func (this *RedBlackTree) Parent() *RedBlackTree {
+	if this == nil {
+		return nil
+	}
+	return this.parent
+}
+
+func (this *RedBlackTree) Right() *RedBlackTree {
+	if this == nil {
+		return nil
+	}
+	return this.right
+}
+
+func (this *RedBlackTree) setColor(color Color) {
+	if this != nil {
+		this.color = color
+	}
+}
+
+func (this *RedBlackTree) Color() Color {
+	if this == nil {
+		return BLACK
+	}
+	return this.color
 }
