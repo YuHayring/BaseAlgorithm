@@ -2,56 +2,17 @@ package main
 
 import (
 	"./basestruct"
+	"./str"
 	"fmt"
 )
 func main() {
+	fmt.Println("start")
 
-	//nums := make([]int, 10)
-	//correct := make([]int, 10)
-	//error := false
-	//
-	//
-	//for times := 0; times < 1000 ; times++ {
-	//	for i,_ := range nums {
-	//		nums[i] = rand.Intn(10)
-	//		correct[i] = nums[i]
-	//	}
-	//	//fmt.Print("src     :")
-	//	//fmt.Println(nums)
-	//	sort.InsertSort(nums)
-	//	sort.MergeSort(correct)
-	//	error = false
-	//	for i,v := range nums {
-	//		if v != correct[i] {
-	//			error = true
-	//			break
-	//		}
-	//	}
-	//	if error {
-	//		fmt.Print("error   :")
-	//		fmt.Println(nums)
-	//		fmt.Print("correct :")
-	//		fmt.Println(correct)
-	//
-	//		fmt.Println("ERROR")
-	//	}
-	//	//else {
-	//	//	fmt.Println("success")
-	//	//}
-	//}
+	fmt.Println(str.Kmp("aabaaabaaac","aabaaac"))
 
+	//fmt.Println(next("aabaaac"))
 
-	//nums := []int{5,4,3,2,1}
-	//sort.MergeSortCur(nums)
-	//fmt.Println(nums)
-
-	//fmt.Println(BinarySearch([]int{0,1,2,3,4,5,6,7,8,9},6))
-
-
-
-
-	RBTreeTest()
-
+	fmt.Println("end")
 }
 
 
@@ -91,3 +52,18 @@ func RBTreeTest() {
 
 }
 
+func next(findStr string) (next []int) {
+	k := 0
+	next = make([]int, len(findStr))
+	next[0] = k
+	for i := 1; i < len(findStr); i++ {
+		for k > 0 && findStr[k] != findStr[i] {
+			k = next[k-1]
+		}
+		if findStr[k] == findStr[i] {
+			k++
+		}
+		next[i] = k
+	}
+	return next
+}
