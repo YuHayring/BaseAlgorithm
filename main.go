@@ -8,9 +8,8 @@ import (
 func main() {
 	fmt.Println("start")
 
-	fmt.Println(str.Kmp("aabaaabaaac","aabaaac"))
 
-	//fmt.Println(next("aabaaac"))
+	fmt.Println(str.BoyerMoore("abcbcsdLibaccbcac", ""))
 
 	fmt.Println("end")
 }
