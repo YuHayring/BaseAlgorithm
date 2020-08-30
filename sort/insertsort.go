@@ -1,11 +1,14 @@
 package sort
 
 //worst:O(n2) avg:O(n2) best:O(n)
-func InsertSort(nums []int){
-	for i, _ := range nums {
-		for i > 0 && nums[i] < nums[i-1] {
-			nums[i], nums[i-1] = nums[i-1], nums[i]
-			i--
+func InsertSort(nums []int) {
+	for i := 1; i < len(nums); i++ {
+		tmp := nums[i]
+		j := i - 1
+		for j > -1 && tmp < nums[j] {
+			nums[j+1] = nums[j]
+			j--
 		}
+		nums[j] = tmp
 	}
 }

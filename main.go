@@ -9,7 +9,7 @@ func main() {
 	fmt.Println("start")
 
 
-	fmt.Println(str.BoyerMoore("abcbcsdLibaccbcac", ""))
+	fmt.Println(str.NextKmp("abaababaab"))
 
 	fmt.Println("end")
 }

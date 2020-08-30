@@ -20,3 +20,7 @@ func (this *Stack) Empty() bool {
 	return this.Head.Next == nil
 }
 
+func CreateStack() *Stack {
+	return &Stack{Head: &ListNode{}}
+}
+
