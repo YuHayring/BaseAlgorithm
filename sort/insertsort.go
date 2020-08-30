@@ -9,6 +9,6 @@ func InsertSort(nums []int) {
 			nums[j+1] = nums[j]
 			j--
 		}
-		nums[j] = tmp
+		nums[j+1] = tmp
 	}
 }

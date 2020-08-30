@@ -2,14 +2,28 @@ package main
 
 import (
 	"./basestruct"
-	"./str"
+	"./sort"
 	"fmt"
+	"math/rand"
 )
 func main() {
 	fmt.Println("start")
 
 
-	fmt.Println(str.NextKmp("abaababaab"))
+	for i := 0; i < 30; i++ {
+		src := make([]int,0,10)
+		for j := 0; j < 10; j++ {
+			src = append(src, rand.Intn(9))
+		}
+		fmt.Println()
+		fmt.Println(src)
+		sort.QuickSort(src)
+		fmt.Println(src)
+	}
+
+	//src := []int{7,3,8,6,6,4,8,3,6,2}
+	//sort.QuickSort(src)
+	//fmt.Println(src)
 
 	fmt.Println("end")
 }
