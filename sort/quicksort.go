@@ -64,24 +64,53 @@ func QuickSort(nums []int) {
 	if len(nums) < 2 {
 		return
 	}
-	left, right := 0, len(nums) - 1
-	value := nums[left] // 基准值
-	for left < right {
-		for nums[right] >= value && left < right { // 依次查找大于等于基准值的位置
-			right--
-		}
-		nums[left] = nums[right]
-		for nums[left] < value && left < right { // 依次查找小于基准值的位置
-			left++
-		}
-		nums[right] = nums[left]
-	}
-	nums[left] = value
+	//
+	left := HoarePartition(nums)
 	if left > 1 {
 		QuickSort(nums[:left])
 	}
 	if left < len(nums) - 2 {
 		QuickSort(nums[left+1:])
 	}
+
+}
+
+
+func LomutoPartition(src []int) int {
+	p := src[0]
+	s := 0
+	for i := 1; i < len(src); i++ {
+		if src[i] < p {
+			s++
+			src[s], src[i] = src[i], src[s]
+		}
+	}
+	src[0], src[s] = src[s], src[0]
+	return s
+}
+
+func HoarePartition(src []int) int {
+	p := src[0]
+	left := 1
+	right := len(src) - 1
+	for left < right {
+		for left < right && src[left] < p {
+			left++
+		}
+		for left < right && src[right] >=p {
+			right--
+		}
+		src[left], src[right] = src[right], src[left]
+	}
+	src[left], src[right] = src[right], src[left]
+	var center int
+	if src[right] < p {
+		center = right
+	} else {
+		center = right-1
+	}
+	src[0], src[center] = src[center], src[0]
+
+	return center
 
 }
