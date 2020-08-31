@@ -2,11 +2,13 @@ package sort
 
 //堆排序
 func HeapSort(nums []int, comparator func(a int, b int) bool ) {
+	//建堆
 	end := len(nums)
 	for index := (end/2) - 1; index > -1; index-- {
 		adjust(nums, index, comparator, end)
 	}
 
+	//每次取出最大（小）的节点，排序
 	end--
 	for end > -1 {
 		nums[0], nums[end] = nums[end], nums[0]
