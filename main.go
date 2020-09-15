@@ -2,13 +2,24 @@ package main
 
 import (
 	"./basestruct"
-	"./str"
+	"./sort"
 	"fmt"
+	"math/rand"
 )
 func main() {
 	fmt.Println("start")
 
-	fmt.Println(str.Horspool("BARBER", "BARBARBARBERBAR"))
+	nums := make([]int,10)
+	for i :=0; i < 10; i++ {
+		for j:=0; j<10; j++ {
+			nums[j] = rand.Intn(100)
+		}
+		sort.Shellsort(nums)
+		fmt.Println(nums)
+	}
+
+
+	fmt.Println()
 
 	fmt.Println("end")
 }

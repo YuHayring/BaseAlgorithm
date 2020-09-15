@@ -114,3 +114,21 @@ func HoarePartition(src []int) int {
 	return center
 
 }
+
+func classicPartition(src []int) int {
+	tmp := src[0]
+	left := 0
+	right := len(src) - 1
+	for left < right {
+		for left < right && src[right] >= tmp {
+			right--
+		}
+		src[left] = src[right]
+		for left < right && src[left] <= tmp {
+			left++
+		}
+		src[right] = src[left]
+	}
+	src[left] = tmp
+	return left
+}
